@@ -1,0 +1,12 @@
+/* Animation d’entrée/sortie des chandeliers */
+.highcharts-point {
+  transition: opacity 0.7s ease-in-out;
+}
+
+.highcharts-point-incoming {
+  opacity: 0;
+}
+
+.highcharts-point-outgoing {
+  opacity: 0;
+}
