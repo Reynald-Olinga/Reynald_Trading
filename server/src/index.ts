@@ -262,53 +262,70 @@ const PORT = process.env.PORT || 3010;
 // Docs
 const { swaggerDocs } = require("./utils/swagger");
 
-// Connexion MongoDB
+
+// =======================================================================
+// 🔗 CONNEXION MONGODB 
+// =======================================================================
+
 const constructMongoURI = () => {
   const username = encodeURIComponent(process.env.STOTRA_MONGODB_USERNAME || '');
   const password = encodeURIComponent(process.env.STOTRA_MONGODB_PASSWORD || '');
   const cluster = process.env.STOTRA_MONGODB_CLUSTER || '';
-  const options = process.env.STOTRA_MONGODB_OPTIONS || 'retryWrites=true&w=majority';
-
   return `mongodb+srv://${username}:${password}@${cluster}`;
 };
 
 const MONGODB_URI = constructMongoURI();
 
-mongoose.connect(MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  connectTimeoutMS: 30000
-})
-.then(() => {
-  console.log('🟢 Connecté avec succès à MongoDB Atlas');
-  console.log(`📊 Base de données: ${mongoose.connection.db?.databaseName || 'N/A'}`);
-  console.log(`🛰  Cluster: ${process.env.STOTRA_MONGODB_CLUSTER}`);
-})
-.catch((err) => {
-  console.error('🔴 Erreur de connexion à MongoDB:');
-  console.error(`🔗 URI utilisée: mongodb+srv://${process.env.STOTRA_MONGODB_USERNAME}:*****@${process.env.STOTRA_MONGODB_CLUSTER}/`);
-  console.error('💻 Message:', err.message);
-  process.exit(1);
-});
+async function connectMongo(retries = Infinity, delay = 5000): Promise<void> {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,
+    });
+    console.log('🟢 Connecté avec succès à MongoDB Atlas');
+    console.log(`📊 Base de données : ${mongoose.connection.db?.databaseName || 'N/A'}`);
+  } catch (err) {
+    logger.error('[Mongo] Échec connexion – nouvelle tentative dans ' + delay + 'ms', {
+      message: (err as Error).message,
+    });
+    if (retries === 0) {
+      // Dernier recours : on laisse le driver se débrouiller ou on redémarre
+      logger.error('[Mongo] Trop de tentatives – abandon');
+      // process.exit(1);  ← on supprime cette ligne
+    } else {
+      // Retry
+      setTimeout(() => connectMongo(retries === Infinity ? Infinity : retries - 1, delay), delay);
+    }
+  }
+}
 
-// Événements de connexion
-mongoose.connection.on('connected', () => {
-  console.log('Mongoose connecté à ' + (mongoose.connection.db?.databaseName || 'N/A'));
-});
+// Lancement de la connexion (sans bloquer le serveur)
+connectMongo();
 
+// Gestion des événements post-connexion
 mongoose.connection.on('error', (err) => {
-  console.error('Erreur de connexion Mongoose:', err);
+  logger.error('[Mongo] Erreur réseau détectée', { message: err.message });
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('Mongoose déconnecté');
+  logger.warn('[Mongo] Connexion perdue – reconnexion auto…');
 });
 
-// Gestion propre de la fermeture
+mongoose.connection.on('reconnected', () => {
+  logger.info('[Mongo] Reconnexion réussie');
+});
+
+// Fermeture propre sur SIGINT
 process.on('SIGINT', async () => {
-  await mongoose.connection.close();
-  console.log('Connexion MongoDB fermée (SIGINT)');
-  process.exit(0);
+  try {
+    await mongoose.connection.close();
+    logger.info('[Mongo] Connexion fermée proprement (SIGINT)');
+  } catch (err) {
+    logger.error('[Mongo] Erreur lors de la fermeture', err);
+  } finally {
+    process.exit(0);
+  }
 });
 
 
@@ -1210,6 +1227,21 @@ app.use("/", require("./routes")); // Préfixe déjà inclus dans les routes
 //app.use("/api", require("./routes"));
 
 
+// ----------------------------------------------------------
+// 1) Middleware d'erreur GLOBAL (doit être LE DERNIER)
+// ----------------------------------------------------------
+const globalErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  logger.error(`[GLOBAL] ${err.message}`, { stack: err.stack });
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message,
+  });
+};
+app.use(globalErrorHandler);
+
+
 const server = app.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   swaggerDocs(app, PORT);
@@ -1231,37 +1263,19 @@ const server = app.listen(PORT, async () => {
   transports: ["websocket", "polling"],
 });
 
+process.on('uncaughtException', (err) => {
+  logger.error('[FATAL] Uncaught Exception', err);
+  process.exit(1); // redémarrage Docker/PM2
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('[FATAL] Unhandled Rejection at', promise, reason);
+  process.exit(1);
+});
+
 // ✅ Configuration unique du WebSocket
 io.on('connection', (socket) => {
   console.log(`🟢 Client connecté: ${socket.id}`);
-
-  // // Authentification
-  // socket.on('authenticate', async (token: string) => {
-  //   try {
-  //     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-  //     const user = await UserModel.findById(decoded.userId);
-      
-  //     if (user) {
-  //       socket.join('general');
-  //       socket.emit('authenticated', { username: user.username });
-  //       console.log(`✅ ${user.username} authentifié`);
-  //     }
-  //   } catch (error) {
-  //     socket.emit('error', { message: 'Authentification échouée' });
-  //   }
-  // });
-
-  // // Messages
-  // socket.on('sendMessage', (data: { text: string }) => {
-  //   const message = {
-  //     id: socket.id + Date.now(),
-  //     username: socket.data.username,
-  //     text: data.text,
-  //     timestamp: new Date()
-  //   };
-  //   io.to('general').emit('newMessage', message);
-  // });
-
 
   // Quand le client s’authentifie
   socket.on('authenticate', (token) => {
@@ -1353,6 +1367,15 @@ io.on('connection', (socket) => {
     
     socket.emit('historical', historical);
   });
+
+  socket.on('sendMessage', ({ text }) => {
+  try {
+    // votre logique actuelle
+  } catch (e) {
+    logger.error('[WS] sendMessage error', e);
+    socket.emit('error', { message: 'Internal error' });
+  }
+});
 
 });
 
