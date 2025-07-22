@@ -49,6 +49,8 @@ const login = (req: Request, res: Response) => {
         req.body.password,
         user.password
       );
+     
+      console.log({ username: user.username, password: req.body.password });
 
       if (!passwordIsValid) {
         return res.status(401).send({
@@ -56,7 +58,7 @@ const login = (req: Request, res: Response) => {
           message: "Incorrect password",
         });
       }
-
+      console.log("Password valid:", passwordIsValid);
       const token = jwt.sign({ id: user.id }, jwtSecret!, {
         algorithm: "HS256",
         allowInsecureKeySizes: true,
