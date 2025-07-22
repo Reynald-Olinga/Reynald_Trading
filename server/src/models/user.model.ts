@@ -1,17 +1,17 @@
 // src/models/user.model.ts
 import mongoose, { Schema, Document, model } from "mongoose";
-import Position, { IPosition } from './position.model';
+import { IPosition } from './position.model';
 
 export interface IUser extends Document {
   username: string;
-  password: string;
+  password?: string; // Marque la propriété comme optionnelle
   watchlist: string[];
-  ledger: any[];
+  ledger: any;
   positions: IPosition[];
   cash: number;
   balance: number;
+  __v?: number; // Marque la propriété comme optionnelle
 }
-
 
 const UserSchema = new Schema<IUser>({
   username: {
@@ -34,9 +34,10 @@ const UserSchema = new Schema<IUser>({
     default: []
   },
   ledger: {
-    type: [Schema.Types.ObjectId], // référence vers Transaction
+    type: [Schema.Types.Mixed], // référence vers Transaction
     ref: 'Transaction',
-    default: []
+    default: [],
+    required: false,
   },
   positions: {
     type: [Schema.Types.ObjectId], // référence vers Position
@@ -73,6 +74,7 @@ const UserSchema = new Schema<IUser>({
 // Middleware pour synchroniser les positions
 UserSchema.pre('save', async function (next) {
   if (this.isModified('positions')) {
+    const Position = mongoose.model('Position');
     const positions = await Position.find({ userId: this._id });
     this.positions = positions.map(p => p._id); // on ne stocke que les ObjectId
   }
@@ -81,3 +83,7 @@ UserSchema.pre('save', async function (next) {
 
 const UserModel = mongoose.models.User || model<IUser>('User', UserSchema);
 export default UserModel;
+
+
+
+

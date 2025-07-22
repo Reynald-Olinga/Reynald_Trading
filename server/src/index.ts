@@ -332,7 +332,7 @@ process.on('SIGINT', async () => {
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
@@ -736,8 +736,13 @@ app.get("/api/account/balance", async (req: Request, res: Response) => {
 // Route pour les actualités (corrigée)
 app.get("/api/news", async (req: Request, res: Response) => {
   try {
-    const news = await fetchFinnhubNews();
-    res.json(news);
+    try {
+      const yahooNews = fetchFromYahoo();
+      res.json(yahooNews);
+    } catch (error) {
+      const news = await fetchFinnhubNews();
+      res.json(news);
+    }
   } catch (error) {
     logger.error('News fetch error:', error);
     res.status(500).json({
