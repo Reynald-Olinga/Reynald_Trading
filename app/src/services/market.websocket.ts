@@ -10,7 +10,7 @@ class MarketWebSocketService {
   connect() {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
-    this.ws = new WebSocket('ws://localhost:3010/market');
+    this.ws = new WebSocket('ws://localhost:8080/market');
 
     this.ws.onopen = () => {
       console.log('✅ WebSocket Market connecté');

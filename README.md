@@ -127,9 +127,9 @@ $ npm run dev
 > ts-node-dev --respawn --pretty --transpile-only ./src/index.ts
 
 [INFO] 17:21:04 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.1, typescript ver. 5.1.6)
-Example app listening at http://0.0.0.0:3010
+Example app listening at http://0.0.0.0:8080
 Swagger-autogen:  Success ✔
-Swagger docs available at http://0.0.0.0:3010/api/docs
+Swagger docs available at http://0.0.0.0:8080/api/docs
 Connected to Database
 ```
 

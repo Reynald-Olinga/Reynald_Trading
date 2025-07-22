@@ -3,7 +3,7 @@ console.log('📡 Chat WebSocket service chargé');
 import { io, Socket } from 'socket.io-client';
 import tokens from './tokens.service';
 
-const socket: Socket = io('http://localhost:3010', {
+const socket: Socket = io('ws://reynaldtrading-production.up.railway.app', {
   auth: { token: tokens.getToken?.() },
   transports: ['polling','websocket']
 });

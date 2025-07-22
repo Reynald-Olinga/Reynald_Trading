@@ -54,7 +54,7 @@ const ChatPage: React.FC = () => {
     }
 
     // Connexion WebSocket
-    const newSocket = io('http://localhost:3010', {
+    const newSocket = io('https://reynaldtrading-production.up.railway.app', {
       auth: {
         token: tokens.getToken()
       }

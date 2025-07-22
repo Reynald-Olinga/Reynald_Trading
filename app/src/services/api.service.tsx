@@ -1,8 +1,10 @@
 import axios from "axios";
 import tokens from "./tokens.service";
 
+const API_URL = "https://reynaldtrading-production.up.railway.app";
+
 const instance = axios.create({
-  baseURL: "http://localhost:3010/api",
+  baseURL: `${API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -72,7 +74,7 @@ instance.interceptors.response.use(
     } else if (error.code === "ECONNREFUSED") {
       console.error("Serveur backend injoignable - Vérifiez que :");
       console.error("1. Le serveur est démarré");
-      console.error("2. Le port 3010 est libre");
+      console.error("2. Le port 8080 est libre");
       console.error("3. Aucun firewall ne bloque la connexion");
     } else {
       console.error("Erreur réseau ou configuration :", error.message);
