@@ -3,7 +3,11 @@ import { Server as HttpServer } from 'http';
 
 export default function attachNewsServer(server: HttpServer) {
   const io = new Server(server, {
-    cors: { origin: ["http://localhost:5173", "https://reynaldtrading-production.up.railway.app", "https://tradingrey.netlify.app"], credentials: true, allowHeaders: "*" },
+    cors: {
+  origin: "https://tradingrey.netlify.app",
+  credentials: true,
+  allowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+},
   });
 
   io.on('connection', (socket) => {

@@ -23,11 +23,10 @@ export class ChatServer {
   constructor(server: HttpServer) {
     this.io = new Server(server, {
       cors: {
-        //origin: "http://localhost:5173",
-        origin: ["http://localhost:5173", "https://reynaldtrading-production.up.railway.app", "https://tradingrey.netlify.app"],
-        credentials: true,
-        allowHeaders: "*",
-      }
+  origin: "https://tradingrey.netlify.app",
+  credentials: true,
+  allowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+}
     });
 
     this.setupSocketHandlers();

@@ -332,9 +332,9 @@ process.on('SIGINT', async () => {
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "https://reynaldtrading-production.up.railway.app", "https://tradingrey.netlify.app"],
+  origin: "https://tradingrey.netlify.app",
   credentials: true,
-  allowHeaders: "*",
+  allowMethods: "GET, POST, PUT, DELETE, OPTIONS",
 }));
 app.use(morgan("tiny"));
 app.use(express.json());
