@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 import express, { Express, Request, Response } from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import yahooFinance from "yahoo-finance2";
 import axios from "axios";
@@ -52,7 +53,6 @@ async function fetchFinnhubNews() {
 
 // ✅ Configuration corrigée
 const morgan = require("morgan");
-const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 
 // Après dotenv.config()
@@ -333,9 +333,9 @@ process.on('SIGINT', async () => {
 // Middleware
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
+  allowedHeaders: "*",
 }));
 app.use(morgan("tiny"));
 app.use(express.json());

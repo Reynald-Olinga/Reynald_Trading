@@ -23,8 +23,9 @@ export class ChatServer {
   constructor(server: HttpServer) {
     this.io = new Server(server, {
       cors: {
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST"],
+        //origin: "http://localhost:5173",
+        origin: "*",
+        methods: "*",
         credentials: true
       }
     });
