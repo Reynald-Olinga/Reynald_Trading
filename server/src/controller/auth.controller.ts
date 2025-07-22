@@ -45,12 +45,14 @@ const login = (req: Request, res: Response) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      const passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
+      //const passwordIsValid = bcrypt.compareSync(
+      //  req.body.password,
+      //  user.password
+      //);
+      const passwordIsValid = req.body.password === user.password; // Pour simplifier, on compare directement les mots de passe
+      
      
-      console.log({ username: user.username, password: req.body.password });
+      console.log({ username: user.username, password: req.body.password, passwordIsValid,  user });
 
       if (!passwordIsValid) {
         return res.status(401).send({
