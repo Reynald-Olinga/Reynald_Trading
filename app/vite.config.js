@@ -6,7 +6,7 @@ import netlify from "@netlify/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react(), netlify()],
+	plugins: [react()],
 	server: {
 		// host: "0.0.0.0",
 		// proxy: {

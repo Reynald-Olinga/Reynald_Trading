@@ -25,7 +25,8 @@ export class ChatServer {
       cors: {
         //origin: "http://localhost:5173",
         origin: ["http://localhost:5173", "https://reynaldtrading-production.up.railway.app", "https://tradingrey.netlify.app"],
-        credentials: true
+        credentials: true,
+        allowHeaders: "*",
       }
     });
 
