@@ -1257,7 +1257,7 @@ const server = app.listen(PORT, async () => {
 
   const io = new Server(server, {
   cors: {
-    origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app'],
+    origin: ['ws://tradingrey.netlify.app', 'ws://react-frontend-production-eae6.up.railway.app'],
     methods: "*",
     credentials: true
   },
