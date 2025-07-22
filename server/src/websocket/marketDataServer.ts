@@ -23,7 +23,7 @@ export class MarketDataServer {
   constructor(server: HttpServer) {
     this.wss = new WebSocketServer({ server, path: '/market' });
     this.setupHandlers();
-    console.log('📈 MarketDataServer attaché sur ws://localhost:3010/market');
+    console.log('📈 MarketDataServer attaché sur ws://localhost:8080/market');
   }
 
   private setupHandlers() {
@@ -163,7 +163,7 @@ export class MarketDataServer {
 //   constructor(server: HttpServer) {
 //     this.wss = new WebSocketServer({ server, path: '/market' });
 //     this.setupHandlers();
-//     console.log('📈 MarketDataServer attaché sur ws://localhost:3010/market');
+//     console.log('📈 MarketDataServer attaché sur ws://localhost:8080/market');
 //   }
 
 //   private setupHandlers() {
