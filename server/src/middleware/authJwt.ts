@@ -16,7 +16,7 @@ export function verifyToken(
 	}] 
 	#swagger.autoHeaders=false
 	*/
-	let token = req.headers["Authorization"];
+	let token = req.headers["authorization"];
 
 	console.log("token inside verifyToken", token);
 		
@@ -24,7 +24,7 @@ export function verifyToken(
 		return res.status(403).send({ message: "No token provided" });
 	}
 
-	token = token.split(".")[1];
+	token = token.split(" ")[1];
 
 	jwt.verify(token, jwtSecret!, (err, decoded) => {
 		if (err) {
