@@ -1249,7 +1249,7 @@ app.use(globalErrorHandler);
 
 
 const server = app.listen(PORT, async () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on https://localhost:${PORT}`);
   swaggerDocs(app, PORT);
   
   // // ✅ WebSocket intégré
@@ -1258,7 +1258,7 @@ const server = app.listen(PORT, async () => {
 
   //✅  WebSocket Market
   new MarketDataServer(server);
-  console.log(`📈 MarketDataServer running on ws://localhost:${PORT}/market`);
+  console.log(`📈 MarketDataServer running on wss://localhost:${PORT}/market`);
 
   const io = new Server(server, {
   cors: {
