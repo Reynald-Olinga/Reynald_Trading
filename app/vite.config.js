@@ -12,7 +12,7 @@ export default defineConfig({
 		proxy: {
 			"/api": {
 				target: 'https://reynaldtrading-production.up.railway.app', // URL de votre API
-				// changeOrigin: true,
+				changeOrigin: true,
 				secure: false,
 				ws: true,
 				rewrite: path => path.replace(/^\/api/, '')

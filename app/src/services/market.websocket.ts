@@ -10,7 +10,7 @@ class MarketWebSocketService {
   connect() {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
-    this.ws = new WebSocket('ws://reynaldtrading-production.up.railway.app/market');
+    this.ws = new WebSocket('ws://reynaldtrading-production.up.railway.app/market'); ///market enlevé
 
     this.ws.onopen = () => {
       console.log('✅ WebSocket Market connecté');
