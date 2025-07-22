@@ -23,7 +23,7 @@ export class ChatServer {
   constructor(server: HttpServer) {
     this.io = new Server(server, {
       cors: {
-        origin: "https://tradingrey.netlify.app/",
+        origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app'],
         methods: ["GET", "POST"],
         credentials: true
       }
