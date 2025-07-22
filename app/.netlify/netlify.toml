@@ -1,19 +1,19 @@
 functionsDirectory = "/home/reynald/Reynald_Trading/app/netlify/functions"
-functionsDirectoryOrigin = "config-v1"
-redirectsOrigin = "config"
+functionsDirectoryOrigin = "ui"
 plugins = []
 headers = []
+redirects = []
 
 [functions]
 
 [functions."*"]
 
 [build]
-publish = "/home/reynald/Reynald_Trading/app/app/dist"
-publishOrigin = "config"
-commandOrigin = "config"
+publish = "/home/reynald/Reynald_Trading/app/dist"
+publishOrigin = "ui"
+commandOrigin = "ui"
 base = "/home/reynald/Reynald_Trading/app"
-command = "cd app && npm run build"
+command = "npm run build"
 functions = "/home/reynald/Reynald_Trading/app/netlify/functions"
 
 [build.environment]
@@ -29,15 +29,3 @@ functions = "/home/reynald/Reynald_Trading/app/netlify/functions"
 [build.processing.js]
 
 [build.services]
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200.0
-force = false
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]

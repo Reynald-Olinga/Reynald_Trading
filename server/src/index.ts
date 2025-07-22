@@ -332,7 +332,7 @@ process.on('SIGINT', async () => {
 
 // Middleware
 app.use(cors({
-  origin: 'https://tradingrey.netlify.app/',
+  origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app']
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
@@ -1257,7 +1257,7 @@ const server = app.listen(PORT, async () => {
 
   const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app'],
     methods: "*",
     credentials: true
   },

@@ -1,18 +1,18 @@
 functionsDirectory = "/home/reynald/Reynald_Trading/netlify/functions"
-functionsDirectoryOrigin = "config-v1"
-redirectsOrigin = "config"
+functionsDirectoryOrigin = "ui"
 plugins = []
 headers = []
+redirects = []
 
 [functions]
 
 [functions."*"]
 
 [build]
-publish = "/home/reynald/Reynald_Trading/app/dist"
-publishOrigin = "config"
-commandOrigin = "config"
-command = "cd app && npm install ajv --save-dev && npm install && npm run build"
+publish = "/home/reynald/Reynald_Trading/dist"
+publishOrigin = "ui"
+commandOrigin = "ui"
+command = "npm run build"
 functions = "/home/reynald/Reynald_Trading/netlify/functions"
 
 [build.environment]
@@ -28,15 +28,3 @@ functions = "/home/reynald/Reynald_Trading/netlify/functions"
 [build.processing.js]
 
 [build.services]
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200.0
-force = false
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
