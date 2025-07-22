@@ -332,7 +332,8 @@ process.on('SIGINT', async () => {
 
 // Middleware
 app.use(cors({
-  origin: ['https://react-frontend-production-eae6.up.railway.app', 'https://tradingrey.netlify.app']
+  //origin: ['https://react-frontend-production-eae6.up.railway.app', 'https://tradingrey.netlify.app']
+  origin: 'https://react-frontend-production-eae6.up.railway.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
@@ -736,7 +737,7 @@ app.get("/api/account/balance", async (req: Request, res: Response) => {
 // Route pour les actualités (corrigée)
 app.get("/api/news", async (req: Request, res: Response) => {
   try {
-    const news = await fetchFinnhubNews();
+    const news = await fetchFromYahoo();
     res.json(news);
   } catch (error) {
     logger.error('News fetch error:', error);
@@ -1257,7 +1258,8 @@ const server = app.listen(PORT, async () => {
 
   const io = new Server(server, {
   cors: {
-    origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app', 'https://react-frontend-production-eae6.up.railway.app/market','https://tradingrey.netlify.app/market'],
+    //origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app', 'https://react-frontend-production-eae6.up.railway.app/market','https://tradingrey.netlify.app/market'],
+    origin :'https://react-frontend-production-eae6.up.railway.app/market'
     methods: "*",
     credentials: true
   },
@@ -1381,10 +1383,6 @@ io.on('connection', (socket) => {
 });
 
 console.log(`🗣️  WebSocket Server running on ws://localhost:${PORT}`);
-
-
-
-
 
 
 
