@@ -333,7 +333,6 @@ process.on('SIGINT', async () => {
 // Middleware
 app.use(cors({
   origin: '*',
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   allowedHeaders: "*",
 }));
