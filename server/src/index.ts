@@ -332,9 +332,8 @@ process.on('SIGINT', async () => {
 
 // Middleware
 app.use(cors({
-  origin: '*',
+  origin: ["http://localhost:5173", "https://reynaldtrading-production.up.railway.app", "https://tradingrey.netlify.app"],
   credentials: true,
-  allowedHeaders: "*",
 }));
 app.use(morgan("tiny"));
 app.use(express.json());
@@ -1261,8 +1260,7 @@ const server = app.listen(PORT, async () => {
 
   const io = new Server(server, {
   cors: {
-    origin: "*",
-    methods: "*",
+    origin: ["http://localhost:5173", "https://reynaldtrading-production.up.railway.app", "https://tradingrey.netlify.app"],
     credentials: true
   },
   transports: ["websocket", "polling"],
