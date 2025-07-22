@@ -29,3 +29,5 @@ server/src/swagger-output.json
 
 # Secrets
 server/.env
+# Local Netlify folder
+.netlify
