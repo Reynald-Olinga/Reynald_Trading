@@ -16,13 +16,15 @@ export function verifyToken(
 	}] 
 	#swagger.autoHeaders=false
 	*/
-	let token = req.headers["authorization"];
+	let token = req.headers["Authorization"];
 
+	console.log("token inside verifyToken", token);
+		
 	if (!token) {
 		return res.status(403).send({ message: "No token provided" });
 	}
 
-	token = token.split(" ")[1];
+	token = token.split(".")[1];
 
 	jwt.verify(token, jwtSecret!, (err, decoded) => {
 		if (err) {
@@ -32,6 +34,7 @@ export function verifyToken(
 		}
 		// Set request user id to decoded id in typescript
 		req.body.userId = (decoded! as JwtPayload).id;
+		req.body.username = (decoded! as JwtPayload).username;
 		next();
 	});
 }

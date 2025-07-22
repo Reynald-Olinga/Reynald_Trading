@@ -18,7 +18,7 @@ const signup = (req: Request, res: Response) => {
   // SUPPRIMÉ: L'appel à validateTurnstile() et sa gestion Promise
   const newUser = new User({
     username: req.body.username,
-    password: bcrypt.hashSync(req.body.password, 10),
+    password: req.body.password,
     watchlist: [],
     ledger: [],
     positions: [],
@@ -61,11 +61,14 @@ const login = (req: Request, res: Response) => {
         });
       }
       console.log("Password valid:", passwordIsValid);
-      const token = jwt.sign({ id: user.id }, jwtSecret!, {
+      const token = jwt.sign({ id: user._id, username: user.username, userId:user._id }, jwtSecret!, {
         algorithm: "HS256",
         allowInsecureKeySizes: true,
         expiresIn: "7d",
       });
+
+      console.log({ id: user._id, username: user.username, userId:user._id });
+      
       
       res.status(200).send({
         id: user._id,
