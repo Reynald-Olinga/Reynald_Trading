@@ -16,6 +16,8 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import api from "../services/api.service";
+
 
 interface NewsItem {
     title: string;
@@ -58,18 +60,34 @@ function Newsfeed(props: { symbol: string }) {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await axios.get("/api/news/" + (props.symbol || ""));
-                
+                const response = await api.get("/news/" + (props.symbol || ""));
+                console.log("News fetched:", response.data);
                 // Validation des données reçues
-                const validNews = Array.isArray(response.data) 
+                let validNews = Array.isArray(response.data) 
                     ? response.data
                         .slice(0, 9)
                         .filter((item: any) => 
                             item?.title && 
                             item?.sourceUrl && 
                             item?.publishedAt
-                        )
+                        ).map((item: any) => ({
+                            title: item?.title || "No title",
+                            description: item?.title || "No description",
+                            publishedAt: new Date(item?.publishedAt) || new Date().toISOString(),
+                            symbols: item?.symbols || [],
+                            source: item?.sourceUrl || "Unknown",
+                            sourceUrl: item?.sourceUrl || "#"}))
                     : [];
+
+                
+                validNews = response.data.slice(0,9).map((item: any) => ({
+                    title: item?.category || "No title",
+                    description: item?.headline || "No description",
+                    publishedAt: new Date(item?.datetime) || new Date().toISOString(),
+                    symbols: item?.symbols || [],
+                    source: item?.source || "Unknown",
+                    sourceUrl: item?.url || "#",
+                }));
                 
                 setNews(validNews);
             } catch (error) {
@@ -115,8 +133,8 @@ function Newsfeed(props: { symbol: string }) {
             templateColumns="repeat(auto-fill, minmax(250px, 1fr))"
             gap={5}
         >
-            {news.map((item) => (
-                <Card maxW="sm" h="100%" key={`${item.title}-${item.publishedAt}`}>
+            {news.map((item, i) => (
+                <Card maxW="sm" h="100%" key={`${item.title}-${i}`}>
                     <CardHeader fontSize="sm" pb={2} display="flex" gap="2">
                         <Text whiteSpace="nowrap">{timeSince(item.publishedAt)}</Text>
                         <Text

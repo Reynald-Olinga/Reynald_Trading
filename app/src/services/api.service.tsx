@@ -1,10 +1,12 @@
 import axios from "axios";
 import tokens from "./tokens.service";
 
-const API_URL = "https://reynaldtrading-production.up.railway.app";
+//const API_URL = "http://localhost:8080/api"; // Utilisez l'URL de votre serveur backend
+
+const API_URL = "https://reynaldtrading-production.up.railway.app/api"; // URL de production
 
 const instance = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: `${API_URL}`,
   headers: {
     "Content-Type": "application/json",
   },

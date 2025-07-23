@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 import express, { Express, Request, Response } from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import yahooFinance from "yahoo-finance2";
 import axios from "axios";
@@ -52,7 +53,6 @@ async function fetchFinnhubNews() {
 
 // ✅ Configuration corrigée
 const morgan = require("morgan");
-const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 
 // Après dotenv.config()
@@ -332,10 +332,9 @@ process.on('SIGINT', async () => {
 
 // Middleware
 app.use(cors({
-  origin: ['https://react-frontend-production-eae6.up.railway.app', 'https://tradingrey.netlify.app']
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ['https://react-frontend-production-eae6.up.railway.app', 'https://tradingrey.netlify.app'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
+  allowMethods: "GET, POST, PUT, DELETE, OPTIONS",
 }));
 app.use(morgan("tiny"));
 app.use(express.json());
@@ -736,8 +735,13 @@ app.get("/api/account/balance", async (req: Request, res: Response) => {
 // Route pour les actualités (corrigée)
 app.get("/api/news", async (req: Request, res: Response) => {
   try {
-    const news = await fetchFromYahoo();
-    res.json(news);
+    try {
+      const yahooNews = fetchFromYahoo();
+      res.json(yahooNews);
+    } catch (error) {
+      const news = await fetchFinnhubNews();
+      res.json(news);
+    }
   } catch (error) {
     logger.error('News fetch error:', error);
     res.status(500).json({
@@ -1244,7 +1248,7 @@ app.use(globalErrorHandler);
 
 
 const server = app.listen(PORT, async () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on https://localhost:${PORT}`);
   swaggerDocs(app, PORT);
   
   // // ✅ WebSocket intégré
@@ -1253,13 +1257,14 @@ const server = app.listen(PORT, async () => {
 
   //✅  WebSocket Market
   new MarketDataServer(server);
-  console.log(`📈 MarketDataServer running on ws://localhost:${PORT}/market`);
+  console.log(`📈 MarketDataServer running on wss://localhost:${PORT}/market`);
 
   const io = new Server(server, {
   cors: {
     origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app', 'https://react-frontend-production-eae6.up.railway.app/market','https://tradingrey.netlify.app/market'],
-    methods: "*",
+    
     credentials: true
+    allowHeaders: "*",
   },
   transports: ["websocket", "polling"],
 });

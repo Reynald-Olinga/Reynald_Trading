@@ -71,15 +71,21 @@ async function login(username: string, password: string): Promise<string> {
       password 
     });
 
-    console.log("Réponse du serveur:", response.data);
+    console.log("Réponse du serveur huhuhuhuhuh:", response.data);
 
-    if (!response.data?.token) {
+    const receivedToken = response.data?.accessToken || response.data?.token;
+    console.log("Token reçu:", receivedToken);
+
+    if (!receivedToken) {
       throw new Error("No token received");
     }
 
+    //const token = response.data?.accessToken || response.data?.token;
+
     // Stockez le token et username
     const authenticatedUsername = response.data.username || username;
-    tokens.setTokenAndUsername(response.data.token, authenticatedUsername);
+    tokens.setTokenAndUsername(receivedToken, authenticatedUsername);
+    console.log({response, username, authenticatedUsername});
     
     // ✅ Retourner "success" pour le composant Login
     return "Connexion réussi";
@@ -88,7 +94,8 @@ async function login(username: string, password: string): Promise<string> {
     console.error("Erreur complète:", {
       request: error.config?.data,
       response: error.response?.data,
-      status: error.response?.status
+      status: error.response?.status,
+      error
     });
     throw new Error(error.response?.data?.message || "Connexion incomplète");
   }
@@ -409,6 +416,8 @@ export const getBuyingPower = async (): Promise<number> => {
     const token = tokens.getToken();
     if (!token) throw new Error("Authentication required");
 
+    console.log(token, "token dans getBuyingPower");
+    
     const response = await api.get('/account/balance', {
       headers: { Authorization: `Bearer ${token}` }
     });

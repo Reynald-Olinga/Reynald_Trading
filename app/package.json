@@ -18,7 +18,11 @@
 		"@fontsource-variable/manrope": "^5.0.8",
 		"@fontsource/bitcount": "^5.2.1",
 		"@marsidev/react-turnstile": "^0.2.3",
+<<<<<<< HEAD
 		"@netlify/vite-plugin": "^2.4.6",
+=======
+		"@netlify/vite-plugin": "^2.4.5",
+>>>>>>> 648dc40c394b838b9957d99562b175b4059a339a
 		"@types/jest": "^29.5.3",
 		"@types/node": "^20.4.10",
 		"@types/socket.io-client": "^1.4.36",
