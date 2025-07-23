@@ -1263,7 +1263,7 @@ const server = app.listen(PORT, async () => {
   cors: {
     origin: ['https://tradingrey.netlify.app', 'https://react-frontend-production-eae6.up.railway.app', 'https://react-frontend-production-eae6.up.railway.app/market','https://tradingrey.netlify.app/market'],
     
-    credentials: true
+    credentials: true,
     allowHeaders: "*",
   },
   transports: ["websocket", "polling"],
