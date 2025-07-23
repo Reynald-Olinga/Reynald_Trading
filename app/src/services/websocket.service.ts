@@ -1,7 +1,7 @@
 // src/services/websocket.service.ts
 import { io, Socket } from "socket.io-client";
 
-const WS_URL = "ws://reynaldtrading-production.up.railway.app/market";           /// market enlevé
+const WS_URL = "wss://reynaldtrading-production.up.railway.app/market";           /// market enlevé
 
 export interface Candle {
   symbol: string;
